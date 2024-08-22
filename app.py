@@ -10,12 +10,22 @@ def generate_response(correction_intensity,
                       user_query_audio
                       ):
     # Convert input audio to text
+
+    language_codes = {'English':'en',
+                     'Urdu':'ur',
+                     'Japanese':'ja'}
+
+    user_query_transcribed_segments, info = model.transcribe(
+        audio=user_query_audio,
+        language=language_codes[language_choice]
+        )
+    user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
+
     # Ask llm for response to text
     # Convert llm response to audio
     # Return converted llm response
-    user_query_transcribed_segments, info = model.transcribe(user_query_audio)
-    user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
-    return user_query_audio, user_query_transcribed
+    
+    return user_query_transcribed
 
 demo = gr.Interface(
     fn=generate_response,
@@ -41,7 +51,6 @@ demo = gr.Interface(
             type='filepath'
         )],
     outputs=[
-        gr.Audio(label='User Query'),
         gr.Textbox(label='AI Buddy Response')
     ],
     title="AI Language Buddy"
