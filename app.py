@@ -38,13 +38,16 @@ demo = gr.Interface(
         ),
         gr.Dropdown(
             choices=['Beginner', 'Intermediate', 'Advanced'],
-            label='Language Level'),
+            label='Language Level'
+            ),
         gr.Dropdown(
             choices=['Formal Teacher', 'Flirty Friend', 'Sarcastic Bro'],
-            label='Language Buddy Personality'),
+            label='Language Buddy Personality'
+            ),
         gr.Dropdown(
             choices=['English', 'Urdu', 'Japanese'],
-            label='Language Choice'),
+            label='Language Choice',
+            value='English'),
         gr.Audio(
             sources='microphone',
             show_download_button=True,
