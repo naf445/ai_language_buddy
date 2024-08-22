@@ -46,7 +46,7 @@ demo = gr.Interface(
             choices=['English', 'Urdu', 'Japanese'],
             label='Language Choice'),
         gr.Audio(
-            # format='mp3',
+            sources='microphone',
             show_download_button=True,
             type='filepath'
         )],
