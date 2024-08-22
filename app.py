@@ -1,16 +1,21 @@
 import gradio as gr
+from faster_whisper import WhisperModel
+
+model = WhisperModel("tiny")
 
 def generate_response(correction_intensity,
                       language_level,
                       buddy_personality,
                       language_choice,
-                      user_query
+                      user_query_audio
                       ):
     # Convert input audio to text
     # Ask llm for response to text
     # Convert llm response to audio
     # Return converted llm response
-    return user_query
+    user_query_transcribed_segments, info = model.transcribe(user_query_audio)
+    user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
+    return user_query_audio, user_query_transcribed
 
 demo = gr.Interface(
     fn=generate_response,
@@ -31,11 +36,15 @@ demo = gr.Interface(
             choices=['English', 'Urdu', 'Japanese'],
             label='Language Choice'),
         gr.Audio(
-            sources=["microphone"],
+            # format='mp3',
+            show_download_button=True,
+            type='filepath'
         )],
     outputs=[
-        gr.Audio(label='User Query')
+        gr.Audio(label='User Query'),
+        gr.Textbox(label='AI Buddy Response')
     ],
     title="AI Language Buddy"
 )
+
 demo.launch()
