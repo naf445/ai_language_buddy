@@ -12,7 +12,7 @@ def generate_response(correction_intensity,
     # Convert input audio to text
 
     language_codes = {'English':'en',
-                     'Urdu':'ur',
+                     'Spanish':'es',
                      'Japanese':'ja'}
 
     user_query_transcribed_segments, info = model.transcribe(
@@ -22,6 +22,8 @@ def generate_response(correction_intensity,
     user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
 
     # Ask llm for response to text
+
+
     # Convert llm response to audio
     # Return converted llm response
     
