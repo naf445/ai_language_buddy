@@ -3,12 +3,11 @@ from faster_whisper import WhisperModel
 
 model = WhisperModel("tiny")
 
-def generate_response(correction_intensity,
-                      language_level,
-                      buddy_personality,
-                      language_choice,
-                      user_query_audio
-                      ):
+def generate_response(
+    language_level, buddy_personality,
+    language_choice, user_query_audio,
+    chatbot_history
+):
     # Convert input audio to text
 
     language_codes = {'English':'en',
@@ -20,45 +19,65 @@ def generate_response(correction_intensity,
         language=language_codes[language_choice]
         )
     user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
+    user_message = 'User: ' + user_query_transcribed
 
     # Ask llm for response to text
 
+    bot_message = 'Bot: ' + user_query_transcribed
+    chatbot_history.append((user_query_transcribed, bot_message))
 
     # Convert llm response to audio
-    # Return converted llm response
+    # Return None to reset user input audio and
+    # llm response + user inputs in chatbot_history object to be displayed 
     
-    return user_query_transcribed
+    return None, chatbot_history
 
-demo = gr.Interface(
-    fn=generate_response,
-    inputs=[
-        gr.Slider(
-            minimum=1,
-            maximum=5,
-            step=1,
-            label='Grammar Correction Intensity'
-        ),
-        gr.Dropdown(
-            choices=['Beginner', 'Intermediate', 'Advanced'],
-            label='Language Level'
-            ),
-        gr.Dropdown(
-            choices=['Formal Teacher', 'Flirty Friend', 'Sarcastic Bro'],
-            label='Language Buddy Personality'
-            ),
-        gr.Dropdown(
-            choices=['English', 'Urdu', 'Japanese'],
-            label='Language Choice',
-            value='English'),
-        gr.Audio(
-            sources='microphone',
-            show_download_button=True,
-            type='filepath'
-        )],
-    outputs=[
-        gr.Textbox(label='AI Buddy Response')
-    ],
-    title="AI Language Buddy"
-)
+with gr.Blocks() as demo:
+
+    header_section = gr.Markdown(
+    """
+    # AI Language Buddy!
+    Click the **converse** button to practice your language skills!
+    """)
+    
+    language = gr.Dropdown(
+        choices=['English', 'Spanish', 'Japanese'],
+        label='Language Choice',
+        value='English'
+    )
+    
+    language_level = gr.Dropdown(
+        choices=['Beginner', 'Intermediate', 'Advanced'],
+        label='Language Level',
+        value='Beginner'
+    )
+    
+    personality = gr.Dropdown(
+        choices=['Formal Teacher', 'Flirty Friend', 'Sarcastic Bro'],
+        label='Language Buddy Personality',
+        value='Flirty Friend'
+    )
+
+    chatbot = gr.Chatbot()
+    
+    user_input = gr.Audio(
+        sources='microphone',
+        show_download_button=True,
+        type='filepath'
+    )
+
+    converse_button = gr.Button("Send Message")
+
+    clear_button = gr.Button("Clear Convo History")
+
+    converse_button.click(
+        fn=generate_response,
+        inputs=[
+            language_level, personality,
+            language, user_input,
+            chatbot
+        ],
+        outputs=[user_input, chatbot]
+    )
 
 demo.launch()
