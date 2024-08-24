@@ -1,7 +1,7 @@
 import gradio as gr
 from faster_whisper import WhisperModel
 
-model = WhisperModel("tiny")
+model = WhisperModel("tiny", compute_type="float32")
 
 def generate_response(
     language_level, buddy_personality,
@@ -24,13 +24,13 @@ def generate_response(
     # Ask llm for response to text
 
     bot_message = 'Bot: ' + user_query_transcribed
-    chatbot_history.append((user_query_transcribed, bot_message))
+    chatbot_history.append((user_message, bot_message))
 
     # Convert llm response to audio
     # Return None to reset user input audio and
     # llm response + user inputs in chatbot_history object to be displayed 
     
-    return None, chatbot_history
+    return None, chatbot_history, user_query_audio
 
 with gr.Blocks() as demo:
 
@@ -66,6 +66,10 @@ with gr.Blocks() as demo:
         type='filepath'
     )
 
+    ai_response = gr.Audio(
+        autoplay=True
+    )
+
     converse_button = gr.Button("Send Message")
 
     clear_button = gr.Button("Clear Convo History")
@@ -73,11 +77,15 @@ with gr.Blocks() as demo:
     converse_button.click(
         fn=generate_response,
         inputs=[
-            language_level, personality,
-            language, user_input,
+            language_level,
+            personality,
+            language,
+            user_input,
             chatbot
         ],
-        outputs=[user_input, chatbot]
+        outputs=[user_input,
+                 chatbot,
+                 ai_response]
     )
 
 demo.launch()
