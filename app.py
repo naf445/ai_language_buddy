@@ -1,7 +1,18 @@
 import gradio as gr
 from faster_whisper import WhisperModel
+import edge_tts
+import tempfile
+import asyncio
 
 model = WhisperModel("tiny", compute_type="float32")
+
+# Text-to-speech function
+async def text_to_speech(text, voice):   
+    communicate = edge_tts.Communicate(text, voice)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmp_file:
+        tmp_path = tmp_file.name
+        await communicate.save(tmp_path)
+    return tmp_path, None
 
 def generate_response(
     language_level, buddy_personality,
@@ -29,8 +40,10 @@ def generate_response(
     # Convert llm response to audio
     # Return None to reset user input audio and
     # llm response + user inputs in chatbot_history object to be displayed 
+    voice_short_name = "en-US-BrianNeural"
+    bot_message_audio, warning = asyncio.run(text_to_speech(text=bot_message, voice=voice_short_name))
     
-    return None, chatbot_history, user_query_audio
+    return None, chatbot_history, bot_message_audio
 
 with gr.Blocks() as demo:
 
