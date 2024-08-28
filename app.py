@@ -40,7 +40,13 @@ def generate_response(
     # Convert llm response to audio
     # Return None to reset user input audio and
     # llm response + user inputs in chatbot_history object to be displayed 
-    voice_short_name = "en-US-BrianNeural"
+    if language_choice == "Spanish":
+        voice_short_name =  "es-MX-JorgeNeural"
+    elif language_choice == "Japanese":
+        voice_short_name = "ja-JP-KeitaNeural"
+    else: 
+        # default to an english voice otherwise
+        voice_short_name = "en-US-BrianNeural"
     bot_message_audio, warning = asyncio.run(text_to_speech(text=bot_message, voice=voice_short_name))
     
     return None, chatbot_history, bot_message_audio
