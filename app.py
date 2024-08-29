@@ -33,7 +33,7 @@ def generate_response(
 
     # Ask llm for response to text
 
-    bot_message = 'bot: '+ user_query_transcribed
+    bot_message = user_query_transcribed
 
     chatbot_history.append(gr.ChatMessage(role="user", content=user_query_transcribed))
     chatbot_history.append(gr.ChatMessage(role="assistant", content=bot_message))
