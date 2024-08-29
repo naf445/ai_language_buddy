@@ -30,12 +30,13 @@ def generate_response(
         language=language_codes[language_choice]
         )
     user_query_transcribed = list(user_query_transcribed_segments)[0].text.strip()
-    user_message = 'User: ' + user_query_transcribed
 
     # Ask llm for response to text
 
-    bot_message = 'Bot: ' + user_query_transcribed
-    chatbot_history.append((user_message, bot_message))
+    bot_message = 'bot: '+ user_query_transcribed
+
+    chatbot_history.append(gr.ChatMessage(role="user", content=user_query_transcribed))
+    chatbot_history.append(gr.ChatMessage(role="assistant", content=bot_message))
 
     # Convert llm response to audio
     # Return None to reset user input audio and
@@ -71,7 +72,7 @@ with gr.Blocks() as demo:
         value='Flirty Friend'
     )
 
-    chatbot = gr.Chatbot()
+    chatbot = gr.Chatbot(type='messages')
     
     user_input = gr.Audio(
         sources='microphone',
