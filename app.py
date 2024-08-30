@@ -58,7 +58,8 @@ async def text_to_speech(text, voice):
     return tmp_path, None
 
 def generate_response(
-    language_level, buddy_personality,
+    # language_level,
+    buddy_personality,
     language_choice, user_query_audio,
     chatbot_history
 ):
@@ -115,11 +116,11 @@ with gr.Blocks() as demo:
         value='English'
     )
     
-    language_level = gr.Dropdown(
-        choices=['Beginner', 'Intermediate', 'Advanced'],
-        label='Language Level',
-        value='Beginner'
-    )
+    # language_level = gr.Dropdown(
+    #     choices=['Beginner', 'Intermediate', 'Advanced'],
+    #     label='Language Level',
+    #     value='Beginner'
+    # )
     
     personality = gr.Dropdown(
         choices=['Formal Teacher', 'Flirty Friend', 'Sarcastic Bro'],
@@ -146,7 +147,7 @@ with gr.Blocks() as demo:
     converse_button.click(
         fn=generate_response,
         inputs=[
-            language_level,
+            # language_level,
             personality,
             language,
             user_input,
