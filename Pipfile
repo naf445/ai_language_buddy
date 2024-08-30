@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 gradio = "*"
+faster-whisper = "*"
+edge-tts = "*"
+pyyaml = "*"
+openai = "*"
 
 [dev-packages]
 
