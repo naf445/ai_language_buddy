@@ -107,7 +107,7 @@ with gr.Blocks() as demo:
     header_section = gr.Markdown(
     """
     # AI Language Buddy!
-    Click the **converse** button to practice your language skills!
+    Click the **Send Message** button to practice your language skills!
     """)
     
     language = gr.Dropdown(
